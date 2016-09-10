@@ -1,0 +1,7 @@
+<ion-view view-title="Puntajes">
+  <ion-content class="fondo">
+	<ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="puesto in listaPuntajesCompleta" ng-if="puesto.nombre != null" type="item-text-wrap" >
+      <p><b>{{puesto.nombre}}:</b> {{puesto.puntaje}} pts.</p>
+    </ion-item>
+  </ion-content>
+</ion-view>

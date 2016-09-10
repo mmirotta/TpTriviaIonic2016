@@ -1,0 +1,13 @@
+<ion-view view-title="Ingreso">
+  <ion-content class="padding fondo">
+    <div class="padding list list-inset">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Ingresar su usuario</span>
+        <input type="text" name="txtNombre" placeholder="" ng-model="usuario.nombre">
+      </label>
+      <button class="button button-block button-positive" ng-click="Ingresar()" ng-disabled="usuario.nombre == ''">
+      Jugar
+      </button>
+    </div>
+  </ion-content>
+</ion-view>

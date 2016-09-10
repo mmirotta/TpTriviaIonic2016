@@ -1,0 +1,33 @@
+<ion-view view-title="Jugar">
+  <ion-content class="fondo">
+    <div class="list list-inset">
+      <div class="item item-text-wrap encabezadoPregunta">
+        <span>{{pregunta.pregunta}}</span>
+      </div>
+      <div class="item">
+        <img src='{{icono1}}' class='icono'>
+        <img src='{{icono2}}' class='icono'>
+        <img src='{{icono3}}' class='icono'>
+        <img src='{{icono4}}' class='icono'>
+        <img src='{{icono5}}' class='icono'>
+      </div>
+    </div>
+    <div class="list list-inset">
+      <div class="item item-calm">
+        <button class="{{claseOpcion1}}" ng-click="Comprobar('1')" >
+          {{pregunta.opcion1}}
+        </button>
+        <button class="{{claseOpcion2}}" ng-click="Comprobar('2')" >
+          {{pregunta.opcion2}}
+        </button>
+        <button class="{{claseOpcion3}}" ng-click="Comprobar('3')" >
+          {{pregunta.opcion3}}
+        </button>
+        <button class="{{claseOpcion4}}" ng-click="Comprobar('4')" >
+          {{pregunta.opcion4}}
+        </button>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
