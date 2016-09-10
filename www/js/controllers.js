@@ -12,19 +12,21 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PuntuacionesCtrl', function($scope) {
+.controller('PuntuacionesCtrl', function($scope,  $timeout) {
   var puntajeReferencia = new Firebase('https://trivia-bea4e.firebaseio.com/usuario/');
 
   $scope.listaPuntajesCompleta = [];
 
   puntajeReferencia.on('child_added', function (snapshot) {
-    var puntaje = snapshot.val();
-    $scope.listaPuntajesCompleta.push(puntaje);
+    $timeout(function() {
+      var puntaje = snapshot.val();
+      $scope.listaPuntajesCompleta.push(puntaje);
+    });
   });
 
 })
 
-.controller('JuegoCtrl', function($scope, $state, $stateParams) {
+.controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout) {
 
   $scope.usuario = JSON.parse($stateParams.usuario);
 
@@ -50,21 +52,23 @@ angular.module('starter.controllers', [])
   $scope.numeroRandom = Math.floor((Math.random() * 10) + 1);
  
   preguntaReferencia.on('child_added', function (snapshot) {
-    var preguntas = snapshot.val();
-    
-    if (preguntas.numero == $scope.numeroRandom){
-      $scope.pregunta.pregunta = preguntas.pregunta;
-      $scope.pregunta.opcion1 = preguntas.opcion1;
-      $scope.pregunta.opcion2 = preguntas.opcion2;
-      $scope.pregunta.opcion3 = preguntas.opcion3;
-      $scope.pregunta.opcion4 = preguntas.opcion4;
-      $scope.pregunta.correcta = preguntas.correcta;
-      $scope.pregunta.puntaje = preguntas.puntaje;
-      $scope.pregunta.numero = preguntas.numero;
-      $scope.pregunta.correcta = preguntas.correcta;
-      $scope.preguntasElegidas.push($scope.numeroRandom);
-      console.log($scope.preguntasElegidas);
-    } 
+    $timeout(function() {
+      var preguntas = snapshot.val();
+      
+      if (preguntas.numero == $scope.numeroRandom){
+        $scope.pregunta.pregunta = preguntas.pregunta;
+        $scope.pregunta.opcion1 = preguntas.opcion1;
+        $scope.pregunta.opcion2 = preguntas.opcion2;
+        $scope.pregunta.opcion3 = preguntas.opcion3;
+        $scope.pregunta.opcion4 = preguntas.opcion4;
+        $scope.pregunta.correcta = preguntas.correcta;
+        $scope.pregunta.puntaje = preguntas.puntaje;
+        $scope.pregunta.numero = preguntas.numero;
+        $scope.pregunta.correcta = preguntas.correcta;
+        $scope.preguntasElegidas.push($scope.numeroRandom);
+        console.log($scope.preguntasElegidas);
+      } 
+    });
   });
 
 
@@ -81,13 +85,13 @@ angular.module('starter.controllers', [])
       $scope.preguntasIncorrectas = parseInt($scope.preguntasIncorrectas) + 1;
       cambiarIcono(parseInt($scope.preguntasTotal), "0");
     }
+    guardarResultado(opcion);
     if (parseInt($scope.preguntasTotal) < 5)
     {
       otraPregunta();
     }
     else
     {
-      guardarResultado();
       $scope.resultado = {};
       $scope.resultado.correctas = $scope.preguntasCorrectas;
       $scope.resultado.incorrectas = $scope.preguntasIncorrectas;
@@ -131,11 +135,11 @@ angular.module('starter.controllers', [])
     });
   }
 
-  function guardarResultado()
+  function guardarResultado(opcion)
   {
     var usuarioReferencia = new Firebase('https://trivia-bea4e.firebaseio.com/usuario/');
     var fecha = Firebase.ServerValue.TIMESTAMP;
-    usuarioReferencia.push({nombre:$scope.usuario.nombre, fechaJuego: fecha, correctas: $scope.preguntasCorrectas, incorrectas: $scope.preguntasIncorrectas, puntaje: $scope.puntaje});
+    usuarioReferencia.push({nombre:$scope.usuario.nombre, fechaJuego: fecha, correcta: $scope.pregunta.correcta, respuesta: opcion, pregunta: $scope.pregunta.numero});
   }
 
   function cambiarIcono(opcion, correcta){
