@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ngCordova'])
 
 .controller('IngresoCtrl', function($scope, $state) {
   $scope.usuario = {};
@@ -26,7 +26,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout) {
+.controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout, $cordovaVibration) {
 
   $scope.usuario = JSON.parse($stateParams.usuario);
 
@@ -66,7 +66,6 @@ angular.module('starter.controllers', [])
         $scope.pregunta.numero = preguntas.numero;
         $scope.pregunta.correcta = preguntas.correcta;
         $scope.preguntasElegidas.push($scope.numeroRandom);
-        console.log($scope.preguntasElegidas);
       } 
     });
   });
@@ -140,6 +139,24 @@ angular.module('starter.controllers', [])
     var usuarioReferencia = new Firebase('https://trivia-bea4e.firebaseio.com/usuario/');
     var fecha = Firebase.ServerValue.TIMESTAMP;
     usuarioReferencia.push({nombre:$scope.usuario.nombre, fechaJuego: fecha, correcta: $scope.pregunta.correcta, respuesta: opcion, pregunta: $scope.pregunta.numero});
+  }
+
+  function respuestaCorrecta(){
+    try{
+      $cordovaVibration.vibrate(300);
+    }
+    catch (error){
+      alert(error);
+    }
+  }
+
+  function respuestaIncorrecta(){
+    try{
+      $cordovaVibration.vibrateWithPattern(300, 2);
+    }
+    catch (error){
+      alert(error);
+    }
   }
 
   function cambiarIcono(opcion, correcta){
