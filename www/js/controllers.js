@@ -28,6 +28,22 @@ angular.module('starter.controllers', ['ngCordova'])
 
 .controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout, $cordovaVibration) {
 
+  /*$cordovaNativeAudio 
+    .preloadSimple('correcto', 'audio/correcto.mp3')
+    .then(function (msg) {
+      console.log(msg);
+    }, function (error) {
+      alert(error);
+    });
+
+  $cordovaNativeAudio
+    .preloadSimple('error', 'audio/error.mp3')
+    .then(function (msg) {
+      console.log(msg);
+    }, function (error) {
+      alert(error);
+    }); */
+
   $scope.usuario = JSON.parse($stateParams.usuario);
 
   var preguntaReferencia = new Firebase('https://trivia-bea4e.firebaseio.com/preguntas/');
@@ -78,11 +94,27 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.preguntasCorrectas = parseInt($scope.preguntasCorrectas) + 1;
       $scope.puntaje = parseInt($scope.puntaje) + parseInt($scope.pregunta.puntaje);
       cambiarIcono(parseInt($scope.preguntasTotal), "1");
+      try
+      {
+        $cordovaVibration.vibrate(200);
+      }
+      catch(error)
+      {
+        console.log("la Pc no vibra");
+      }
     }
     else
     {
       $scope.preguntasIncorrectas = parseInt($scope.preguntasIncorrectas) + 1;
       cambiarIcono(parseInt($scope.preguntasTotal), "0");
+      try
+      {
+        $cordovaVibration.vibrate([200, 0, 200]);
+      }
+      catch(error)
+      {
+        console.log("la Pc no vibra");
+      }
     }
     guardarResultado(opcion);
     if (parseInt($scope.preguntasTotal) < 5)
