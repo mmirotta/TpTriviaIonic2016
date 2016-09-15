@@ -1,13 +1,23 @@
 <ion-view view-title="Resultado">
-  <ion-content clas="fondo">
+  <ion-content class="bodyInicio" scroll="false">
     <div class="card">
-      <div class="item item-divider">
-        <h2>{{resultado.mensaje}}</h2>
-      </div>
       <div class="item item-text-wrap">
-        <h1>Correctas: {{resultado.correctas}}</h1>
-        <h1>Incorrectas: {{resultado.incorrectas}}</h1>
-        <h1>Puntos: {{resultado.puntaje}}</h1>
+        <div class="resultado">
+          <img src='img/ganaste.jpg' style="width: 30%">
+        </div>
+        <div class="resultado">
+          <label class="resultadoCorrecto">
+            Correctas: {{resultado.correctas}}
+          </label>
+          <label class="resultadoIncorrecto">
+            Incorrectas: {{resultado.incorrectas}}
+          </label>
+        </div>
+        <div class="resultado">
+          <label class="resultadoPuntos">
+            Puntos: {{resultado.puntaje}}
+          </label>
+        </div>
       </div>
     </div>
   </ion-content>

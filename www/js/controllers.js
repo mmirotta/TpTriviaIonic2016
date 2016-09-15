@@ -26,23 +26,29 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
-.controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout, $cordovaVibration) {
+.controller('JuegoCtrl', function($scope, $state, $stateParams, $timeout, $cordovaVibration, $cordovaNativeAudio) {
 
-  /*$cordovaNativeAudio 
-    .preloadSimple('correcto', 'audio/correcto.mp3')
-    .then(function (msg) {
-      console.log(msg);
-    }, function (error) {
-      alert(error);
-    });
+  try
+  {
+    $cordovaNativeAudio 
+      .preloadSimple('correcto', 'audio/correcto.mp3')
+      .then(function (msg) {
+        console.log(msg);
+      }, function (error) {
+        alert(error);
+      });
 
-  $cordovaNativeAudio
-    .preloadSimple('error', 'audio/error.mp3')
-    .then(function (msg) {
-      console.log(msg);
-    }, function (error) {
-      alert(error);
-    }); */
+    $cordovaNativeAudio
+      .preloadSimple('error', 'audio/error.mp3')
+      .then(function (msg) {
+        console.log(msg);
+      }, function (error) {
+        alert(error);
+      }); 
+  }
+  catch(error){
+    console.log(error);
+  }
 
   $scope.usuario = JSON.parse($stateParams.usuario);
 
@@ -54,10 +60,10 @@ angular.module('starter.controllers', ['ngCordova'])
   $scope.puntaje = "0";
   $scope.preguntasTotal = "0";
   $scope.imagenesResultado = "";
-  $scope.claseOpcion1 = "button button-block button-stable";
-  $scope.claseOpcion2 = "button button-block button-stable";
-  $scope.claseOpcion3 = "button button-block button-stable";
-  $scope.claseOpcion4 = "button button-block button-stable";
+  $scope.claseOpcion1 = "button button-block button-stable sombraBotones";
+  $scope.claseOpcion2 = "button button-block button-stable sombraBotones";
+  $scope.claseOpcion3 = "button button-block button-stable sombraBotones";
+  $scope.claseOpcion4 = "button button-block button-stable sombraBotones";
 
   $scope.icono1 = 'img/signo.png';
   $scope.icono2 = 'img/signo.png';
@@ -94,32 +100,19 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.preguntasCorrectas = parseInt($scope.preguntasCorrectas) + 1;
       $scope.puntaje = parseInt($scope.puntaje) + parseInt($scope.pregunta.puntaje);
       cambiarIcono(parseInt($scope.preguntasTotal), "1");
-      try
-      {
-        $cordovaVibration.vibrate(200);
-      }
-      catch(error)
-      {
-        console.log("la Pc no vibra");
-      }
+      respuestaCorrecta();
     }
     else
     {
       $scope.preguntasIncorrectas = parseInt($scope.preguntasIncorrectas) + 1;
       cambiarIcono(parseInt($scope.preguntasTotal), "0");
-      try
-      {
-        $cordovaVibration.vibrate([200, 0, 200]);
-      }
-      catch(error)
-      {
-        console.log("la Pc no vibra");
-      }
+      respuestaIncorrecta();
     }
     guardarResultado(opcion);
     if (parseInt($scope.preguntasTotal) < 5)
     {
-      otraPregunta();
+      cambiarColorRespuesta(parseInt(opcion), parseInt($scope.pregunta.correcta))
+      $timeout(otraPregunta, 1000);
     }
     else
     {
@@ -133,6 +126,10 @@ angular.module('starter.controllers', ['ngCordova'])
   };
 
   function otraPregunta(){
+    $scope.claseOpcion1 = "button button-block button-stable sombraBotones";
+    $scope.claseOpcion2 = "button button-block button-stable sombraBotones";
+    $scope.claseOpcion3 = "button button-block button-stable sombraBotones";
+    $scope.claseOpcion4 = "button button-block button-stable sombraBotones";
     var existe = 0;
     do {
       $scope.numeroRandom = Math.floor((Math.random() * 10) + 1);
@@ -143,7 +140,6 @@ angular.module('starter.controllers', ['ngCordova'])
           existe = 1;
         }
       };
-
     }
     while (existe == 1);     
 
@@ -161,13 +157,11 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.pregunta.numero = preguntas.numero;
         $scope.pregunta.correcta = preguntas.correcta;
         $scope.preguntasElegidas.push($scope.numeroRandom);
-        console.log($scope.preguntasElegidas);
       } 
     });
   }
 
-  function guardarResultado(opcion)
-  {
+  function guardarResultado(opcion){
     var usuarioReferencia = new Firebase('https://trivia-bea4e.firebaseio.com/usuario/');
     var fecha = Firebase.ServerValue.TIMESTAMP;
     usuarioReferencia.push({nombre:$scope.usuario.nombre, fechaJuego: fecha, correcta: $scope.pregunta.correcta, respuesta: opcion, pregunta: $scope.pregunta.numero});
@@ -175,19 +169,21 @@ angular.module('starter.controllers', ['ngCordova'])
 
   function respuestaCorrecta(){
     try{
-      $cordovaVibration.vibrate(300);
+      $cordovaVibration.vibrate(200);
+      $cordovaNativeAudio.play('correcto');
     }
     catch (error){
-      alert(error);
+      console.log(error);
     }
   }
 
   function respuestaIncorrecta(){
     try{
-      $cordovaVibration.vibrateWithPattern(300, 2);
+      $cordovaVibration.vibrate([200, 0, 0, 200]);
+      $cordovaNativeAudio.play('error');
     }
     catch (error){
-      alert(error);
+      console.log(error);
     }
   }
 
@@ -212,6 +208,60 @@ angular.module('starter.controllers', ['ngCordova'])
     }
   }
 
+  function cambiarColorRespuesta(opcion, correcta){
+    if (opcion == correcta){
+      switch (opcion)
+      {
+        case 1:
+            $scope.claseOpcion1 = "button button-block button-balanced sombraBotones";
+          break;
+        case 2:
+            $scope.claseOpcion2 = "button button-block button-balanced sombraBotones";
+          break;
+        case 3:
+            $scope.claseOpcion3 = "button button-block button-balanced sombraBotones";
+          break;
+        case 4:
+            $scope.claseOpcion4 = "button button-block button-balanced sombraBotones";
+          break;
+      }
+    }
+    else
+    {
+      switch (opcion)
+      {
+        case 1:
+            $scope.claseOpcion1 = "button button-block button-assertive sombraBotones";
+          break;
+        case 2:
+            $scope.claseOpcion2 = "button button-block button-assertive sombraBotones";
+          break;
+        case 3:
+            $scope.claseOpcion3 = "button button-block button-assertive sombraBotones";
+          break;
+        case 4:
+            $scope.claseOpcion4 = "button button-block button-assertive sombraBotones";
+          break;
+      }
+
+      switch (correcta)
+      {
+        case 1:
+            $scope.claseOpcion1 = "button button-block button-balanced sombraBotones";
+          break;
+        case 2:
+            $scope.claseOpcion2 = "button button-block button-balanced sombraBotones";
+          break;
+        case 3:
+            $scope.claseOpcion3 = "button button-block button-balanced sombraBotones";
+          break;
+        case 4:
+            $scope.claseOpcion4 = "button button-block button-balanced sombraBotones";
+          break;
+      }
+    }
+  }
+
 })
 
 .controller('ResultadoCtrl', function($scope, $state, $stateParams) {
@@ -219,11 +269,11 @@ angular.module('starter.controllers', ['ngCordova'])
 
   if ($scope.resultado.correctas > $scope.resultado.incorrectas)
   {
-    $scope.resultado.mensaje = "Felicitaciones.";
+    $scope.imagen = "img/ganaste.jpg";
   }
   else
   {
-    $scope.resultado.mensaje = "Vuelve a intentarlo";
+    $scope.imagen = "img/perdiste.jpg";
   }
 
 })
