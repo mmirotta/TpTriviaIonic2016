@@ -4,6 +4,12 @@
 	background-size:cover;
 }
 
+.bodyIngreso{
+	padding-left: 3%;
+	padding-right: 3%;
+	padding-top: 15%;
+}
+
 .fondo{
 	background-color: #eee;
 }
@@ -34,9 +40,7 @@
 }
 
 .inputIngresar{
-	margin-top: 40%;
 	width: 100%;
-	font-size: 15px;
 	border-radius: 3px;
 	padding-left: 15px;
 	background-color: #eee;
